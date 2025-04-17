@@ -1,6 +1,5 @@
 from transformers import BertTokenizer, BertModel
 import torch
-from tqdm import tqdm
 import pandas as pd
 
 class BERTFeatureExtractor:
@@ -12,7 +11,7 @@ class BERTFeatureExtractor:
         self.model.eval()
     def extract_features_bert(self, texts, batch_size=1):
         all_features = []
-        for i in tqdm(range(0, len(texts), batch_size), desc="Processing batches"):
+        for i in range(0, len(texts), batch_size):
             batch_texts = texts[i:i + batch_size]
             encoded_dict = self.tokenizer.batch_encode_plus(
                 batch_texts, add_special_tokens=True, padding="longest",

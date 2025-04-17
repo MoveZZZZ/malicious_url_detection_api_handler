@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Float, Integer
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from DataBaseConnection import create_db_engine, create_db_session
 
@@ -33,23 +34,24 @@ class DatabaseManager:
     def add_scan_result(self, url, vote_percentage, avg_base_confidence, meta_confidence, label):
         session = self.Session()
         try:
-            existing = session.query(ScanResult).filter_by(url=url).first()
-            if existing:
-                return False
-
             new_result = ScanResult(
                 url=url,
                 vote_percentage=float(vote_percentage),
                 avg_base_confidence=float(avg_base_confidence),
-                meta_confidence=float(meta_confidence) if meta_confidence != None else meta_confidence,
+                meta_confidence=float(meta_confidence) if meta_confidence is not None else None,
                 label=label
             )
             session.add(new_result)
             session.commit()
             return True
+        except IntegrityError:
+            session.rollback()
+            print(f"[INFO] URL already exists (race condition handled): {url}")
+            return False
         except Exception as e:
             session.rollback()
-            raise e
+            print(f"[DB ERROR] Failed to insert {url}: {e}")
+            return False
         finally:
             session.close()
 
