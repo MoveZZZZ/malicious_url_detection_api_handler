@@ -45,7 +45,6 @@ class ModelEnsembler:
         return preds
     def predict_with_model(self, model_obj, features):
         model_name, model = model_obj
-        print (features.shape)
         try:
             preds = self.predict_with_optional_verbose(model,features)
             if isinstance(preds, dict):
