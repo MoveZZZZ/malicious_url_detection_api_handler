@@ -175,9 +175,9 @@ class ModelEnsembler:
     def write_results(self, url, vote_percentage, avg_confidence, meta_confidence, final_label):
         if self.db_manager.get_scan_result(url) is None:
             self.db_manager.add_scan_result(url, vote_percentage, avg_confidence, meta_confidence, final_label)
-            print(f"Record for {url} successfully added.")
+            print(f"Record for successfully added.")
         else:
-            print(f"Record for {url} already exists.")
+            print(f"Record for already exists.")
 
     def predict_url(self, url: str):
         majority_result = self.majority_vote_prediction(url)
